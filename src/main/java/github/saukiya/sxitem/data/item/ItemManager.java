@@ -50,6 +50,11 @@ public class ItemManager implements Listener {
 
     private final String hashCodeKey;
 
+    /**
+     * 溯源专属NBT, 适用于所有生成器类型, 用于从 ItemStack 反查 SX 物品编号
+     */
+    private final String sourceKey;
+
     private final String defaultType;
 
     private final File rootDirectory;
@@ -81,6 +86,7 @@ public class ItemManager implements Listener {
         this.plugin = plugin;
         this.itemKey = itemKey;
         this.hashCodeKey = hashCodeKey;
+        this.sourceKey = plugin.getName() + ".Source";
         this.defaultType = defaultType;
         this.rootDirectory = new File(plugin.getDataFolder(), "Item");
         plugin.getLogger().info("Loaded " + loadFunction.size() + " ItemGenerators");
@@ -249,6 +255,47 @@ public class ItemManager implements Listener {
     }
 
     /**
+     * 通过溯源专属NBT获取物品的SX物品编号
+     * <p>
+     * 与 {@link #getItemKey(ItemStack)} 不同, 该标签会写入所有生成器类型(包含 Import 等不支持更新的物品),
+     * 可用于从任意 ItemStack 反查其对应的 SX 物品
+     *
+     * @param item 物品
+     * @return SX物品编号, 非本插件生成的物品返回 null
+     */
+    @Nullable
+    public String getSourceKey(ItemStack item) {
+        if (item != null && !item.getType().equals(Material.AIR) && item.hasItemMeta()) {
+            return NbtUtil.getInst().getItemTagWrapper(item).getString(sourceKey);
+        }
+        return null;
+    }
+
+    /**
+     * 判断物品是否由本插件生成
+     *
+     * @param item 物品
+     * @return 是否为 SX 物品
+     */
+    public boolean isSXItem(ItemStack item) {
+        return getSourceKey(item) != null;
+    }
+
+    /**
+     * 解析物品对应的SX物品编号
+     * <p>
+     * 优先读取 {@link #getItemKey(ItemStack)} (兼容旧物品), 不存在时回退到溯源专属NBT
+     *
+     * @param item 物品
+     * @return SX物品编号, 非本插件生成的物品返回 null
+     */
+    @Nullable
+    public String resolveItemKey(ItemStack item) {
+        String key = getItemKey(item);
+        return key != null ? key : getSourceKey(item);
+    }
+
+    /**
      * 通过key获取该物品的生成器
      *
      * @param itemKey
@@ -268,8 +315,8 @@ public class ItemManager implements Listener {
      */
     @Nullable
     public IGenerator getGenerator(ItemStack item) {
-        String key = getItemKey(item);
-        return itemMap.get(key);
+        // 兼容 Import 等不写入 ItemKey 的物品, 回退到溯源专属NBT
+        return itemMap.get(resolveItemKey(item));
     }
 
     /**
@@ -318,11 +365,15 @@ public class ItemManager implements Listener {
     public ItemStack getItem(IGenerator generator, Player player, Object... args) {
         if (generator == null) return emptyItem;
         ItemStack item = generator.getItem(player, args);
-        if (item != emptyItem && item != null && generator instanceof IUpdate) {
-            NbtUtil.getInst().getItemTagWrapper(item).builder()
-                    .set(itemKey, generator.getKey())
-                    .set(hashCodeKey, ((IUpdate) generator).updateCode())
-                    .save();
+        // ReMaterial 为原版材质的直接透传, 不属于本插件物品, 不打溯源标签
+        if (item != emptyItem && item != null && !(generator instanceof GeneratorReMaterial)) {
+            val builder = NbtUtil.getInst().getItemTagWrapper(item).builder()
+                    .set(sourceKey, generator.getKey());
+            if (generator instanceof IUpdate) {
+                builder.set(itemKey, generator.getKey())
+                        .set(hashCodeKey, ((IUpdate) generator).updateCode());
+            }
+            builder.save();
         }
         SXItemSpawnEvent event = new SXItemSpawnEvent(plugin, player, generator, item);
         Bukkit.getPluginManager().callEvent(event);
@@ -364,6 +415,7 @@ public class ItemManager implements Listener {
         val wrapper = NbtUtil.getInst().getItemTagWrapper(newItem);
         wrapper.set(itemKey, updateIg.getKey());
         wrapper.set(hashCodeKey, updateIg.updateCode());
+        wrapper.set(sourceKey, updateIg.getKey());
         updateIg.protectNBT(wrapper, oldWrapper, protectNbtList);
 
         SXItemUpdateEvent event = new SXItemUpdateEvent(plugin, player, (IGenerator) updateIg, newItem, item);

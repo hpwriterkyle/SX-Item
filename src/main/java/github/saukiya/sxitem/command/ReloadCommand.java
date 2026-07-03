@@ -33,6 +33,7 @@ public class ReloadCommand extends SubCommand {
         SXItem.getScriptManager().reload();
         SXItem.getRandomManager().loadData();
         SXItem.getItemManager().loadItemData();
+        SXItem.getStorageManager().loadStorage();
         SXItem.getMainCommand().onReload();
         SXItem.getSdf().remove();
         Bukkit.getPluginManager().callEvent(SXItemReloadEvent.getInst());

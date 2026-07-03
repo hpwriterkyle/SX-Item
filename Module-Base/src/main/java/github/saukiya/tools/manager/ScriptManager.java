@@ -118,7 +118,9 @@ public class ScriptManager implements Listener {
         engine = engineManager.getEngineByName(engineName);
         if (engine == null) {
             if (engineName.equals("js") && NMS.hasClass("org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory")) {
-                engine = new org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory().getScriptEngine();
+                engine = (ScriptEngine) Class.forName("org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory")
+                        .getMethod("getScriptEngine")
+                        .invoke(Class.forName("org.openjdk.nashorn.api.scripting.NashornScriptEngineFactory").newInstance());
             } else {
                 val engineNames = engineManager.getEngineFactories().stream().map(ScriptEngineFactory::getEngineName).collect(Collectors.joining(", "));
                 throw new ScriptException("No Find ScriptEngine: " + engineName + (engineNames.isEmpty() ? "" : "Can Use: " + engineNames));

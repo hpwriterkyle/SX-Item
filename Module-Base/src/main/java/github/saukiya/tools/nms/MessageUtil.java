@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * 消息工具类 - 主要用于发送复杂文本消息{@link BaseComponent}
@@ -88,8 +89,19 @@ public abstract class MessageUtil implements NMS {
         }
 
         public Builder add(Material material) {
-            handle.addExtra(setCurrent(new TranslatableComponent((material.isBlock() ? "block" : "item") + "." + material.getKey().getNamespace() + "." + material.getKey().getKey())));
+            handle.addExtra(setCurrent(new TranslatableComponent(getTranslationKey(material))));
             return this;
+        }
+
+        private String getTranslationKey(Material material) {
+            try {
+                Object key = material.getClass().getMethod("getKey").invoke(material);
+                String namespace = String.valueOf(key.getClass().getMethod("getNamespace").invoke(key));
+                String name = String.valueOf(key.getClass().getMethod("getKey").invoke(key));
+                return (material.isBlock() ? "block" : "item") + "." + namespace + "." + name;
+            } catch (ReflectiveOperationException ignored) {
+                return (material.isBlock() ? "tile" : "item") + "." + material.name().toLowerCase(Locale.ROOT);
+            }
         }
 
         public Builder add(ItemStack item) {

@@ -9,6 +9,12 @@ SAVE:
   SAVE_ITEM_ERROR: '&8[SX-Item] &cUnvorhergesehener Fehler beim Speichern des Gegenstands &4{0}&c'
 NBT:
   CLICK_COPY: 'Klicken zum Kopieren'
+STORAGE:
+  NOT_FOUND: '&8[SX-Item] &cLager &4{0}&c existiert nicht'
+  NOT_ALLOWED: '&8[SX-Item] &cDieser Gegenstand ist kein SX-Gegenstand oder durch die Blacklist dieses Lagers gesperrt'
+  LIMIT: '&8[SX-Item] &cDieses Lager kann maximal &6{1}&c Gegenstaende halten'
+  CLAIM_EMPTY: '&8[SX-Item] &cDieses Lager hat keine abholbaren Gegenstaende oder dein Inventar ist voll'
+  CLAIM_SUCCESS: '&8[SX-Item] &aDu hast &6{1}&a Gegenstaende aus Lager &6{0}&a abgeholt'
 SCRIPT:
   NULL_FILE: 'Skriptdatei nicht gefunden: {0}'
   INVOKE_RESULT: 'Skriptaufruf Ergebnis: {0}, Rückgabetyp: {1}'
@@ -25,4 +31,5 @@ COMMAND:
   NBT: 'Zeigt und bearbeitet die NBT eines Gegenstands'
   COMPONENT: 'Zeigt und bearbeitet die Komponenten eines Gegenstands'
   SCRIPT: 'Ruft Skript-Funktionen auf'
+  STORAGE: 'Oeffnet ein Lager / holt es ab'
   RELOAD: 'Lädt die Konfiguration dieses Plugins neu'

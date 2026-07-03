@@ -9,6 +9,12 @@ SAVE:
   SAVE_ITEM_ERROR: '&8[SX-Item] &cUnpredictable error occurred while saving item &4{0}'
 NBT:
   CLICK_COPY: 'Click to copy'
+STORAGE:
+  NOT_FOUND: '&8[SX-Item] &cStorage &4{0}&c does not exist'
+  NOT_ALLOWED: '&8[SX-Item] &cThis item is not an SX item or is blocked by this storage blacklist'
+  LIMIT: '&8[SX-Item] &cThis storage can hold at most &6{1}&c items'
+  CLAIM_EMPTY: '&8[SX-Item] &cThis storage has no claimable items or your inventory is full'
+  CLAIM_SUCCESS: '&8[SX-Item] &aClaimed &6{1}&a items from storage &6{0}'
 SCRIPT:
   NULL_FILE: 'Script file not found: {0}'
   INVOKE_RESULT: 'Script invocation callback: {0}, Callback type: {1}'
@@ -25,4 +31,5 @@ COMMAND:
   NBT: View and modify item nbt data
   COMPONENT: View and modify item component data
   SCRIPT: Invoke a script function
+  STORAGE: Open/claim a storage
   RELOAD: Reload the configuration of this plugin

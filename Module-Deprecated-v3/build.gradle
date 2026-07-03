@@ -1,5 +1,5 @@
 dependencies {
     compileOnly rootProject
-    compileOnly "$spigot"
+    compileOnly rootProject.ext.effectiveSpigot
     compileOnly "$commons_lang"
 }

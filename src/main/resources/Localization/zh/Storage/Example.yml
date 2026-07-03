@@ -1,0 +1,24 @@
+# 储存器配置示例
+# 每个顶级键为一个储存器编号(Id), 玩家数据保存在 Storage/PlayerData/<玩家UUID>.yml
+#
+# 打开方式:
+#   指令: /si storage <Id> [玩家]   ([玩家]为可选, 需权限 sx-item.storage, 可查看/编辑他人储存器)
+#   领取: /si storage <Id> claim [数量]   (数量不填或小于等于0表示全部领取)
+#   API : SXItem.getStorageManager().open(player, "<Id>")
+#
+# 说明:
+#   - 玩家可以放入未列入 Items 黑名单的SX物品, 且不超过储存器物品总数量上限
+#   - 每个玩家拥有独立的储存数据(个人储存器)
+#   - 再次打开时, 储存的SX物品会按当前配置重新生成后放回GUI中
+Example:
+  # GUI标题
+  Title: '&8储存器示例'
+  # 箱子行数 1-6 (对应 9-54 格)
+  Rows: 3
+  # 储存器最多可存放的物品总数量 (0或负数表示不限量)
+  Amount: 128
+  # 禁止放入的SX物品编号(黑名单); 未列出的SX物品默认允许放入
+  Items:
+    - Default-1
+    - Default-2
+    - Default-3

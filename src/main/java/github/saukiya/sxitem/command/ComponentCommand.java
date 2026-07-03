@@ -68,7 +68,7 @@ public class ComponentCommand extends SubCommand {
             Player player = args.length > 2 ? Bukkit.getPlayerExact(args[2]) : null;
             itemStack = SXItem.getItemManager().getItem(args.length > 1 ? args[1] : null, player);
         }
-        if (itemStack.getType().isAir()) {
+        if (itemStack.getType() == org.bukkit.Material.AIR) {
             MessageUtil.send(sender, Message.GIVE__NO_ITEM.get());
             if (sender instanceof ConsoleCommandSender) {
                 sender.sendMessage("Console Use: /si component [item] <player>");
@@ -85,7 +85,7 @@ public class ComponentCommand extends SubCommand {
                     MessageUtil.send(sender, Message.ADMIN__NO_FORMAT.get());
                     return;
                 }
-                json.add(args[2], JsonParser.parseString(args[3]));
+                json.add(args[2], new JsonParser().parse(args[3]));
                 wrapper.setFromJson(json);
                 wrapper.save();
                 sender.sendMessage("§7Set: " + args[2]);

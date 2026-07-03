@@ -9,6 +9,12 @@ SAVE:
   SAVE_ITEM_ERROR: '&8[SX-Item] &c物品 &4{0} &c保存出现不可预知的错误'
 NBT:
   CLICK_COPY: '点击复制'
+STORAGE:
+  NOT_FOUND: '&8[SX-Item] &c储存器 &4{0}&c 不存在'
+  NOT_ALLOWED: '&8[SX-Item] &c该物品不是SX物品或已被该储存器黑名单禁止'
+  LIMIT: '&8[SX-Item] &c该储存器最多可存放 &6{1}&c 个物品'
+  CLAIM_EMPTY: '&8[SX-Item] &c该储存器没有可领取的物品或背包已满'
+  CLAIM_SUCCESS: '&8[SX-Item] &a已从储存器 &6{0}&a 领取 &6{1}&a 个物品'
 SCRIPT:
   NULL_FILE: '找不到该脚本文件: {0}'
   INVOKE_RESULT: '脚本调用回调: {0}, 回调类型: {1}'
@@ -25,4 +31,5 @@ COMMAND:
   NBT: 查看和修改物品NBT数据
   COMPONENT: 查看和修改物品组件数据
   SCRIPT: 调用脚本函数
+  STORAGE: 打开/领取储存器
   RELOAD: 重新加载这个插件的配置

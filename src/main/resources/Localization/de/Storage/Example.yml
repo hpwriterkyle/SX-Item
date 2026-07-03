@@ -1,0 +1,25 @@
+# Lager-Konfigurationsbeispiel
+# Jeder oberste Schlüssel ist eine Lager-Id. Spielerdaten liegen in Storage/PlayerData/<Spieler-UUID>.yml
+#
+# Öffnen:
+#   Befehl: /si storage <Id> [Spieler]   ([Spieler] optional, benötigt Berechtigung sx-item.storage,
+#                                          Admins können das Lager anderer Spieler ansehen/bearbeiten)
+#   Abholen: /si storage <Id> claim [Menge]   (leer oder <= 0 bedeutet alles abholen)
+#   API   : SXItem.getStorageManager().open(player, "<Id>")
+#
+# Hinweise:
+#   - Spieler können SX-Gegenstände einlegen, die nicht in der Items-Blacklist stehen, bis zum Gesamtmengenlimit
+#   - Jeder Spieler hat eigene Lagerdaten (persönliches Lager)
+#   - Beim erneuten Öffnen werden gelagerte SX-Gegenstände aus der aktuellen Item-Konfiguration neu erzeugt
+Example:
+  # GUI-Titel
+  Title: '&8Lager-Beispiel'
+  # Kistenreihen 1-6 (entspricht 9-54 Slots)
+  Rows: 3
+  # Gesamtmenge an Gegenständen, die dieses Lager halten kann (0 oder negativ = unbegrenzt)
+  Amount: 128
+  # Gesperrte SX-Gegenstand-Ids (Blacklist). Nicht gelistete SX-Gegenstände sind standardmäßig erlaubt
+  Items:
+    - Default-1
+    - Default-2
+    - Default-3

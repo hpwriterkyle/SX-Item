@@ -148,7 +148,7 @@ public abstract class ComponentUtil implements NMS {
          * 从Json字符串中设置相关组件
          **/
         public ItemWrapper setFromJson(String jsonString) {
-            return setMap(jsonToMap(JsonParser.parseString(jsonString)));
+            return setMap(jsonToMap(new JsonParser().parse(jsonString)));
         }
 
         /**

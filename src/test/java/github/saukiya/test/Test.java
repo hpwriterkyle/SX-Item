@@ -51,7 +51,7 @@ public class Test {
     public static void Environment() throws Exception {
         System.out.println("file.encoding: " + System.getProperty("file.encoding"));
         System.out.println("defaultCharset: " + Charset.defaultCharset());
-        System.out.println("system.out: " + System.out.charset());
+        System.out.println("system.out: " + Charset.defaultCharset());
         ManagementFactory.getRuntimeMXBean().getInputArguments().forEach(arg -> System.out.println("jvm.arg: " + arg));
 //        System.setOut(new PrintStream(System.out, true, StandardCharsets.UTF_8));
     }

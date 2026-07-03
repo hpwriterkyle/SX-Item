@@ -3,12 +3,22 @@ plugins {
     id 'com.gradleup.shadow' version '8.3.0'
 }
 var baseProject = project(":Module-Base")
+def legacyBuild = providers.gradleProperty('legacy').map { it == 'true' }.orElse(false).get()
+def effectiveSpigot = legacyBuild ? 'org.spigotmc:spigot-api:1.12.2-R0.1-SNAPSHOT' : "$spigot"
+ext.legacyBuild = legacyBuild
+ext.effectiveSpigot = effectiveSpigot
 // 全局设置
 allprojects { project ->
     apply plugin: 'java'
 
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(23)
+        }
+    }
+
+    sourceCompatibility = legacyBuild ? JavaVersion.VERSION_1_8 : JavaVersion.VERSION_17
+    targetCompatibility = legacyBuild ? JavaVersion.VERSION_1_8 : JavaVersion.VERSION_17
 
     tasks.build.finalizedBy shadowJar
     javadoc.enabled = false
@@ -37,6 +47,8 @@ allprojects { project ->
             compileOnly baseProject
         }
         compileOnly 'org.projectlombok:lombok:1.18.34'
+        compileOnly 'javax.annotation:javax.annotation-api:1.3.2'
+        compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
         annotationProcessor 'org.projectlombok:lombok:1.18.34'
     }
 
@@ -51,7 +63,7 @@ allprojects { project ->
 
 configure([rootProject, baseProject]) {
     dependencies {
-        compileOnly "$spigot"
+        compileOnly effectiveSpigot
         compileOnly "$commons_lang"
     }
 
@@ -82,7 +94,7 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
-jar.archiveClassifier = "core"
+jar.archiveClassifier = legacyBuild ? "core-legacy" : "core"
 processResources.expand(version: version, language: "~")
 buildCopyTask('buildLatestJar', "$rootDir\\build", "Latest")
 
@@ -107,6 +119,7 @@ tasks.register('javadocJar', Jar) {
 
 shadowJar {
     dependsOn dependencyJar
+    archiveClassifier = legacyBuild ? "all-legacy" : "all"
     // 过滤未使用的依赖
     minimize()
     // bStats重定向

@@ -187,12 +187,7 @@ public class GeneratorDefault extends IGenerator implements IUpdate {
                         int amplifier = Integer.parseInt(handler.replace(potionEffectConfig.getString("amplifier", "1")));
                         boolean ambient = potionEffectConfig.getBoolean("ambient", true);
                         boolean particles = potionEffectConfig.getBoolean("particles", true);
-                        PotionEffect potionEffect;
-                        if (NMS.compareTo(1, 13, 2) >= 0) {
-                            potionEffect = new PotionEffect(effect, duration, amplifier, ambient, particles, potionEffectConfig.getBoolean("icon", true));
-                        } else {
-                            potionEffect = new PotionEffect(effect, duration, amplifier, ambient, particles);
-                        }
+                        PotionEffect potionEffect = createPotionEffect(effect, duration, amplifier, ambient, particles, potionEffectConfig.getBoolean("icon", true));
                         ((PotionMeta) meta).addCustomEffect(potionEffect, true);
                     }
                 }
@@ -203,12 +198,12 @@ public class GeneratorDefault extends IGenerator implements IUpdate {
             if (config.isString("CustomModelData")) {
                 val customDataStr = handler.replace(config.getString("CustomModelData"));
                 if (StringUtils.isNumeric(customDataStr)) {
-                    meta.setCustomModelData(Integer.parseInt(customDataStr));
+                    setCustomModelData(meta, Integer.parseInt(customDataStr));
                 }
             } else {
                 int customData = config.getInt("CustomModelData", -1);
                 if (customData != -1) {
-                    meta.setCustomModelData(customData);
+                    setCustomModelData(meta, customData);
                 }
             }
         }
@@ -324,6 +319,22 @@ public class GeneratorDefault extends IGenerator implements IUpdate {
                     }
                 }
             }
+        }
+    }
+
+    private PotionEffect createPotionEffect(PotionEffectType effect, int duration, int amplifier, boolean ambient, boolean particles, boolean icon) {
+        try {
+            return PotionEffect.class.getConstructor(PotionEffectType.class, int.class, int.class, boolean.class, boolean.class, boolean.class)
+                    .newInstance(effect, duration, amplifier, ambient, particles, icon);
+        } catch (ReflectiveOperationException ignored) {
+            return new PotionEffect(effect, duration, amplifier, ambient, particles);
+        }
+    }
+
+    private void setCustomModelData(ItemMeta meta, int customData) {
+        try {
+            meta.getClass().getMethod("setCustomModelData", Integer.class).invoke(meta, customData);
+        } catch (ReflectiveOperationException ignored) {
         }
     }
 }

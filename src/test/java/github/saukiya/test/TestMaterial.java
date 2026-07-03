@@ -93,16 +93,16 @@ public class TestMaterial {
             val enumlist = map_enum.computeIfAbsent(newKey, k -> Triple.of(finalKey, translation, new ArrayList<>())).getRight();
             val mardownList = map_markdown.computeIfAbsent(finalKey, k -> new ArrayList<>());
             if (priority) {
-                enumlist.addFirst(value);
+                enumlist.add(0, value);
                 map_enum.put(newKey, Triple.of(finalKey, translation, enumlist));
             } else {
-                enumlist.addLast(value);
+                enumlist.add(value);
             }
             mardownList.add(Triple.of(value, newKey, translation));
             // 添加
             if (value.endsWith(":0")) {
-                enumlist.addFirst(value.substring(0, value.length() - 2));
-                mardownList.addFirst(Triple.of(value.substring(0, value.length() - 2), newKey, translation));
+                enumlist.add(0, value.substring(0, value.length() - 2));
+                mardownList.add(0, Triple.of(value.substring(0, value.length() - 2), newKey, translation));
             }
 
             value = yaml_input.contains(newKey) ? yaml_input.getString(newKey) + ',' + value : value;
@@ -118,11 +118,11 @@ public class TestMaterial {
         Files.write(Paths.get(testResourcePath.getPath(), "material_enum.java"), enumList.getBytes());
 
         val markdownList = map_markdown.entrySet().stream().flatMap(entry -> {
-            String first = " - `" + entry.getValue().getFirst().getLeft() + "`  " + entry.getValue().getFirst().getMiddle() + (entry.getValue().getFirst().getMiddle().equals(entry.getKey()) ? "" : " `" + entry.getKey() + "`") + " - " + entry.getValue().getFirst().getRight();
+            String first = " - `" + entry.getValue().get(0).getLeft() + "`  " + entry.getValue().get(0).getMiddle() + (entry.getValue().get(0).getMiddle().equals(entry.getKey()) ? "" : " `" + entry.getKey() + "`") + " - " + entry.getValue().get(0).getRight();
             if (entry.getValue().size() == 1) return Stream.of(first);
             return Stream.concat(Stream.of(first), IntStream.range(1, entry.getValue().size()).mapToObj(i -> "   - `" + entry.getValue().get(i).getLeft() + "`  " + entry.getValue().get(i).getMiddle() + " - " + entry.getValue().get(i).getRight()));
         }).collect(Collectors.toList());
-        markdownList.addFirst("## 兼容数字ID列表 `" + enumSize + "`");
+        markdownList.add(0, "## 兼容数字ID列表 `" + enumSize + "`");
         FileUtils.writeLines(new File(testResourcePath, "material_info.md"), markdownList);
 
         System.out.println("Material-Enum: " + enumSize);

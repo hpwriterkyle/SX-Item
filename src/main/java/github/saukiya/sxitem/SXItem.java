@@ -8,6 +8,7 @@ import github.saukiya.sxitem.data.item.ItemManager;
 import github.saukiya.sxitem.data.item.impl.GeneratorDefault;
 import github.saukiya.sxitem.data.item.impl.GeneratorImport;
 import github.saukiya.sxitem.data.random.RandomManager;
+import github.saukiya.sxitem.data.storage.StorageManager;
 import github.saukiya.sxitem.helper.MythicMobsHelper;
 import github.saukiya.sxitem.util.Config;
 import github.saukiya.sxitem.util.Message;
@@ -51,6 +52,8 @@ public class SXItem extends JavaPlugin {
     private static RandomManager randomManager;
     @Getter
     private static ItemManager itemManager;
+    @Getter
+    private static StorageManager storageManager;
 
     @SneakyThrows
     @Override
@@ -66,6 +69,7 @@ public class SXItem extends JavaPlugin {
         mainCommand.register(new NBTCommand());
         mainCommand.register(new ComponentCommand());
         mainCommand.register(new ScriptCommand());
+        mainCommand.register(new StorageCommand());
         mainCommand.register(new ReloadCommand());
         mainCommand.register(new TestCommand());
 
@@ -101,6 +105,7 @@ public class SXItem extends JavaPlugin {
         scriptManager = new ScriptManager(this, Config.getConfig().getString(Config.SCRIPT_ENGINE, "js"));
         randomManager = new RandomManager(this);
         itemManager = new ItemManager(this);
+        storageManager = new StorageManager(this);
 
         Config.setup();
         PlaceholderHelper.setup(this, (player, params) -> ExpressionHandler.getInst().replace(params));

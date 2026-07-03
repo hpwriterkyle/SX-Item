@@ -1,0 +1,25 @@
+# Storage configuration example
+# Each top-level key is a storage Id. Player data is saved in Storage/PlayerData/<player-UUID>.yml
+#
+# How to open:
+#   Command: /si storage <Id> [player]   ([player] optional, needs permission sx-item.storage,
+#                                          lets admins view/edit another player's storage)
+#   Claim  : /si storage <Id> claim [amount]   (empty or non-positive amount means claim all)
+#   API    : SXItem.getStorageManager().open(player, "<Id>")
+#
+# Notes:
+#   - Players may insert SX items that are not listed under the Items blacklist, up to the storage total amount limit
+#   - Each player has independent storage data (personal storage)
+#   - On reopen, stored SX items are regenerated from the current item config and placed back into the GUI
+Example:
+  # GUI title
+  Title: '&8Storage Example'
+  # Chest rows 1-6 (maps to 9-54 slots)
+  Rows: 3
+  # Total amount of items this storage can hold (0 or negative means unlimited)
+  Amount: 128
+  # Blocked SX item ids (blacklist). SX items not listed here are allowed by default
+  Items:
+    - Default-1
+    - Default-2
+    - Default-3

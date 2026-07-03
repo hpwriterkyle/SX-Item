@@ -1,10 +1,12 @@
 rootProject.name = 'SX-Item'
+def legacyBuild = gradle.startParameter.projectProperties.get('legacy') == 'true'
 include 'Module-Base'
 include 'Module-Deprecated-v3'
 if (System.env.JITPACK) return;
 includeModule 'Module-NMS:V1_8_R3'
 includeModule 'Module-NMS:V1_11_R1'
 includeModule 'Module-NMS:V1_12_R1'
+if (legacyBuild) return;
 includeModule 'Module-NMS:V1_13_R2'
 includeModule 'Module-NMS:V1_14_R1'
 includeModule 'Module-NMS:V1_15_R1'
